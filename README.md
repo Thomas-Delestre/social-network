@@ -28,9 +28,8 @@ Back-end architecture (exemple fichiers) :
 - router
     Ce dossier gère toutes les routes de votre API.
 
-    - router.go : Configuration principale du routeur
+    - router_config.go : Configuration principale du routeur
     - routes.go : Définition de toutes les routes
-    - api_v1.go : Regroupement des routes pour l'API v1
     - auth_routes.go : Routes liées à l'authentification
 
 - db_repository
