@@ -5,11 +5,11 @@ import (
 	"net/http"
 )
 
-func AuthRoutes() {
+func GetRoutes() {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
-		// "/login":    handleLogin,
-		// "/logout":   handleLogout,
-		// "/register": handleRegister,
+		// "/profile": handleProfile,
+		// "/post/":   handlePost,
+		// "/posts/":  handlePostList,
 	}
 
 	for i, k := range handlers_map {
