@@ -32,6 +32,7 @@ func CreateTables(db *sql.DB) {
 			first_name VARCHAR(50),
 			last_name VARCHAR(50),
 			birthdate DATETIME,
+			email TEXT,
 			password TEXT UNIQUE,
 			profil_picture TEXT,
 			about_me TEXT
