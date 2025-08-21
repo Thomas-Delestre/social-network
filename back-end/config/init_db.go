@@ -28,22 +28,16 @@ func CreateTables(db *sql.DB) {
 		`
 		CREATE TABLE IF NOT EXISTS users (
 			user_id STRING PRIMARY KEY,
-			cookie TEXT,
 			first_name VARCHAR(50),
 			last_name VARCHAR(50),
 			birthdate DATETIME,
 			email TEXT,
 			password TEXT UNIQUE,
 			profil_picture TEXT,
-			about_me TEXT
-		);
-		`,
-		`
-		CREATE TABLE IF NOT EXISTS cookies (
-			user_id TEXT,
-			token TEXT,
-			life_time DATETIME,
-			FOREIGN KEY(user_id) REFERENCES users(user_id)
+			about_me TEXT,
+			private INTEGER,
+			cookie TEXT,
+			cookie_life_time DATETIME
 		);
 		`,
 		`
@@ -75,7 +69,7 @@ func CreateTables(db *sql.DB) {
 		`,
 		`
 		CREATE TABLE IF NOT EXISTS post_like_dislike (
-			like_dislike_id TEXT
+			like_dislike_id TEXT,
 			user_id TEXT,
 			post_id TEXT,
 			comment_id TEXT,

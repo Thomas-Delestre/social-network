@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"social-net/config"
-	"social-net/router"
+	"socialnet/config"
+	"socialnet/middleware"
+	"socialnet/router"
 
 	"github.com/joho/godotenv"
 
@@ -17,20 +18,21 @@ func main() {
 	fmt.Println("Starting application...")
 
 	if err := godotenv.Load(); err != nil {
-		log.Println("Warning: .env file not found, using system env.")
+		log.Println("Warning: .env file not found, using system env : ", err)
+	} else {
+		log.Println("Fichier .env chargé.")
 	}
-
 	config.InitDB()
 
-	router.SetupRouter()
+	router := router.SetupRouter()
 
 	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
 	fmt.Println("Server running at http://localhost:" + port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+
+	handler := middleware.CORSMiddleware()(router)
+
+	if err := http.ListenAndServe(":"+port, handler); err != nil {
 		log.Fatal("Erreur au démarrage du serveur :", err)
 	}
+
 }

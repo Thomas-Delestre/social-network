@@ -3,9 +3,11 @@ package router
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-func GetRoutes() {
+func GetRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
 		// "/profile": handleProfile,
 		// "/post/":   handlePost,
@@ -14,6 +16,6 @@ func GetRoutes() {
 
 	for i, k := range handlers_map {
 		fmt.Println(i)
-		http.HandleFunc(i, k)
+		router.HandleFunc(i, k)
 	}
 }
