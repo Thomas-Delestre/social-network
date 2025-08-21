@@ -34,6 +34,7 @@ export default function ImageProfilInput() {
       <label className="block">
         <span className="sr-only">Choose profile photo</span>
         <input
+        name="profilPicture"
           type="file"
           accept=".jpg, .jpeg, .png"
           className="block w-full text-sm text-slate-500 rounded-xl dark:text-gray-300"

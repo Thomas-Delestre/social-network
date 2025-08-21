@@ -3,9 +3,12 @@ package router
 import (
 	"fmt"
 	"net/http"
+	"socialnet/controller"
+
+	"github.com/gorilla/mux"
 )
 
-func PostRoutes() {
+func PostRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
 
 		// "/newpost":         handleNewPost,
@@ -14,10 +17,11 @@ func PostRoutes() {
 		// "/newcomment/":     handleNewComment,
 		// "/likecomment/":    handleLikeComment,
 		// "/dislikecomment/": handleDislikeComment,
+		"/register": controller.HandleRegister,
 	}
 
 	for i, k := range handlers_map {
 		fmt.Println(i)
-		http.HandleFunc(i, k)
+		router.HandleFunc(i, k)
 	}
 }

@@ -1,9 +1,46 @@
+
 import ImageProfilInput from "../input/imageProfilPicture";
+import * as React from 'react';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+
+
 
 export default function RegisterForm() {
+
+  const [privacy, setPrivacy] = React.useState("true")
+
+  const privacyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPrivacy(event.target.value);
+  };
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const reg_formData = new FormData(event.currentTarget)
+
+    console.log("🚀 ~ onSubmit ~ reg_formData:")
+    for (const [key, value] of reg_formData) {
+      console.log(`${key}: ${value}\n`)
+    }
+    const response = await fetch('http://localhost:8080/register', {
+      method: 'POST',
+      body: reg_formData,
+    });
+
+    if(!response.ok) {
+      const err_feedback = await response.json();
+      alert(err_feedback.error);
+      return;
+    }
+  }
+  
   return (
     <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" action="#" method="POST">
+      <form className="space-y-6" action="#" method="POST" onSubmit={onSubmit}>
         <div className="grid grid-cols-2 gap-x-4">
           <div>
             <label
@@ -48,22 +85,7 @@ export default function RegisterForm() {
         <div className="grid grid-cols-2 gap-x-4">
           <div>
             <label
-              htmlFor="username"
-              className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-400"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              autoComplete="username"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:ring-gray-600"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="date"
+              htmlFor="birthdate"
               className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-400"
             >
               <span className="font-medium text-red-600 hover:underline dark:text-red-500">
@@ -72,8 +94,8 @@ export default function RegisterForm() {
               Date of Birth
             </label>
             <input
-              id="date"
-              name="date"
+              id="birthdate"
+              name="birthdate"
               type="date"
               required
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:ring-gray-600"
@@ -118,6 +140,7 @@ export default function RegisterForm() {
           </label>
           <textarea
             id="about-me"
+            name="about-me"
             rows={4}
             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:ring-gray-600"
           />
@@ -167,6 +190,21 @@ export default function RegisterForm() {
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:ring-gray-600"
             />
           </div>
+        </div>
+
+        <div>
+          <FormControl>
+            <FormLabel id="demo-controlled-radio-buttons-group">Account Privacy</FormLabel>
+            <RadioGroup
+              aria-labelledby="privacy-radio-group"
+              name="privacy"
+              value={privacy}
+              onChange={privacyChange}
+            >
+            <FormControlLabel value="true" control={<Radio />} label="Private" />
+            <FormControlLabel value="false" control={<Radio />} label="Public" />
+            </RadioGroup>
+          </FormControl>
         </div>
 
         <div>

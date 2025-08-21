@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { users } from '@/app/object/user';
+
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState({
+  const [login_formData, setFormData] = useState({
     email: '',
     password: ''
   });
@@ -20,48 +20,37 @@ export default function LoginForm() {
     }));
   };
 
-  const handleSubmit = (e : any) => {
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let userFound = false;
+    // Debug : afficher les valeurs du state
+    for (const [key, value] of Object.entries(login_formData)) {
+      console.log(key, ": ", value);
+    }
 
-    users.forEach((user, i) => {
-      if (formData.email === user.email && formData.password === user.password) {
-        userFound = true;
-        localStorage.setItem('user', JSON.stringify({ isLogged: true, userData: user }));
-        console.log('Login successful!')
-        toast.success('Login successful!' , {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        
-        }); 
-        router.push('/home'); 
-      }
-
-      if (!userFound && i === users.length - 1) {
-        toast.error('Invalid email or password!' , {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        
-        }); 
-      }
+    // ⚠️ Ici il y a un piège : fetch() ne comprend pas les objets JS bruts (login_formData)
+    // Il faut convertir en JSON
+    const response = await fetch('http://localhost:8080/login', {
+      method: 'POST',
+      body: JSON.stringify(login_formData),  // ← conversion en JSON
     });
 
-  };
+    if (!response.ok) {
+      console.error("Login failed");
+      return;
+    }
 
+    const data = await response.json();
+    console.log("✅ Login success:", data);
+
+    // tu pourrais ensuite rediriger
+    router.push('/home');
+  };
+  
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-6" onSubmit={onSubmit}>
         <div>
           <label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
             Email address
@@ -73,7 +62,7 @@ export default function LoginForm() {
               type="email"
               autoComplete="email"
               required
-              value={formData.email}
+              value={login_formData.email}
               onChange={handleChange}
               className="block border border-gray-300 rounded-md p-2 w-full dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             />
@@ -93,7 +82,7 @@ export default function LoginForm() {
               type="password"
               autoComplete="current-password"
               required
-              value={formData.password}
+              value={login_formData.password}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 w-full dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             />
