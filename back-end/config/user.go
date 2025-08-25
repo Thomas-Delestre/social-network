@@ -44,3 +44,20 @@ func (u User) Authentificate() bool {
 
 	return true
 }
+
+func (u User) Delete() {
+	db := OpenDB()
+	defer db.Close()
+	var st string = `DELETE FROM users WHERE user_id = ?`
+	req, err := db.Prepare(st)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	req.Exec(u.Id)
+}
+
+// func (u User) Logout() {
+// 	db :=
+// }

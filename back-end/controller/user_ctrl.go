@@ -78,9 +78,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("📦 Structure : %+v\n", _user)
 	_user.Register()
 	_user.SetupConnCookie()
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Inscription réussie"})
+	middleware.SendJsonFeedback(w, "Vous avez été enregistré !", http.StatusOK)
 
 }
 
@@ -128,7 +126,8 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Connexion réussie → setup cookie
-	_user.SetupConnCookie()
+	cookie := _user.SetupConnCookie()
+	http.SetCookie(w, &cookie)
 	fmt.Println("NORMALEMENT LE COOKIE EST OK !")
 	middleware.SendJsonFeedback(w, "Vous êtes connecté !", http.StatusOK)
 }

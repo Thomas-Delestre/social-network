@@ -25,9 +25,12 @@ func (u User) SetupConnCookie() (cookie http.Cookie) {
 	_expirationdate := time.Now().Add(time.Hour * 24)
 	req.Exec(_uuid, _expirationdate.Format(time_layout), u.Email)
 	cookie = http.Cookie{
-		Name:    "sessionID",
-		Value:   _uuid.String(),
-		Expires: _expirationdate,
+		Name:     "sessionID",
+		Value:    _uuid.String(),
+		Expires:  _expirationdate,
+		Path:     "/",   // ← indispensable si tu veux qu’il soit dispo partout
+		HttpOnly: true,  // sécurité, empêche accès JS
+		Secure:   false, // mettre true en HTTPS
 	}
-	return
+	return cookie
 }

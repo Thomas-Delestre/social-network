@@ -81,3 +81,11 @@ Back-end architecture (exemple fichiers) :
     - feed_service.go : Algorithme de génération du fil d'actualité
     - search_service.go : Fonctionnalités de recherche
     - file_service.go : Gestion des uploads de fichiers
+
+
+
+# Tests Unitaires
+
+run a partir de /backend avec :
+- ` go test -v ./... ` classique 
+- `-v` pour le détail des test

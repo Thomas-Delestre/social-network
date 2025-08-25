@@ -34,6 +34,7 @@ export default function LoginForm() {
     const response = await fetch('http://localhost:8080/login', {
       method: 'POST',
       body: JSON.stringify(login_formData),  // ← conversion en JSON
+      credentials: 'include',
     });
 
     if (!response.ok) {
