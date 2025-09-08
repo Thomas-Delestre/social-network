@@ -21,6 +21,7 @@ func TestRegister(t *testing.T) {
 	_user.ProfilPicture = "default.png"
 
 	_user.Register()
+
 	var user_exist bool = service.CheckUserExists(_user.Email)
 	if !user_exist {
 		t.Error("Échec de l'enregistrement de l'utilisateur ou de la vérification de son existence.", user_exist)

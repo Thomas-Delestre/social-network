@@ -54,7 +54,6 @@ func (u User) Delete() {
 		fmt.Println(err)
 		return
 	}
-
 	req.Exec(u.Id)
 }
 

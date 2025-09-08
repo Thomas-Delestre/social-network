@@ -15,6 +15,5 @@ func CheckUserExists(user_email string) bool {
 		fmt.Println("Erreur CheckUserExists:", err)
 		return false
 	}
-
 	return count > 0
 }
