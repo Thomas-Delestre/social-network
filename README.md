@@ -1,91 +1,115 @@
-# social-network
+# 📌 Social Network
 
-Social Network
+Projet **Fullstack Social Network** avec un front en **Next.js** et un
+back-end en **Go**.
 
+------------------------------------------------------------------------
+
+## 🖥 Front-end
+
+Créé avec :
+
+``` bash
 npx create-next-app@latest front-end
+```
 
-   - ✔ Would you like to use TypeScript? … No / Yes
-   - ✔ Would you like to use ESLint? … No / Yes
-   - ✔ Would you like to use Tailwind CSS? … No / Yes
-   - ✔ Would you like your code inside a `src/` directory? … No / Yes
-   - ✔ Would you like to use App Router? (recommended) … No / Yes
-  -  ✔ Would you like to use Turbopack for `next dev`? … No / Yes
-   - ✔ Would you like to customize the import alias (`@/*` by default)? … No / Yes
-  - ✔ What import alias would you like configured? … @/*
+Options : TypeScript, ESLint, TailwindCSS, App Router, Turbopack, alias
+`@/*`.
 
-Back-end architecture (exemple fichiers) :
-- cmd
-    Ce dossier contient le point d'entrée de votre application.
+------------------------------------------------------------------------
 
-- config
-    Ce dossier contient toutes les configurations de l'application.
+## ⚙️ Back-end Architecture
 
-    - config.go : Chargement des variables d'environnement et configuration générale
-    - database.go : Configuration de la connexion à SQLite3
-    - env.go : Gestion des variables d'environnement (dev, prod, test)
-    - constants.go : Constantes utilisées dans toute l'application
+### 📂 `cmd/`
 
-- router
-    Ce dossier gère toutes les routes de votre API.
+📌 Point d'entrée de l'application (fichiers `main.go`, lancement du
+serveur).
 
-    - router_config.go : Configuration principale du routeur
-    - routes.go : Définition de toutes les routes
-    - auth_routes.go : Routes liées à l'authentification
+------------------------------------------------------------------------
 
-- db_repository
-    Ce dossier contient les fonctions d'accès à la base de données.
+### 📂 `config/`
 
-    - user_repository.go : Opérations CRUD pour les utilisateurs
-    - post_repository.go : Opérations CRUD pour les posts
-    - comment_repository.go : Opérations CRUD pour les commentaires
-    - like_repository.go : Gestion des likes
-    - follow_repository.go : Gestion des relations entre utilisateurs
-    - migration.go : Scripts de migration de la base de données
+⚙️ Gestion de la configuration et de la base de données :\
+- **cookie.go** 🍪 : génération, suppression et gestion des cookies.\
+- **init_db.go** 🗄️ : initialisation et connexion à la base de données.\
+- **struct.go** 🧩 : structures de données pour la DB et les requêtes.\
+- **user.go** 👤 : méthodes liées aux utilisateurs (CRUD, gestion des
+profils).
 
-- utils
-    Ce dossier contient les fonctions utilitaires utilisées dans toute l'application.
+------------------------------------------------------------------------
 
-    - hash.go : Fonctions de hachage pour les mots de passe
-    - jwt.go : Gestion des tokens JWT
-    - validator.go : Validation des données entrantes
-    - response.go : Formatage des réponses API
-    - logger.go : Configuration des logs
-    - helpers.go : Fonctions d'aide diverses
+### 📂 `router/`
 
-- middleware
-    Ce dossier contient les middlewares utilisés dans les routes.
+🛣️ Gestion des routes de l'API via un `ServeMux`.\
+- **router_config.go** 🔧 : configuration principale du routeur.\
+- **post_routes.go** 📝 : routes liées aux posts.\
+- **get_routes.go** 📥 : routes de lecture.\
+- **auth_routes.go** 🔑 : routes dédiées à l'authentification.
 
-    - auth_middleware.go : Vérification des tokens JWT
-    - cors_middleware.go : Gestion des CORS
-    - rate_limiter.go : Limitation du nombre de requêtes
-    - logger_middleware.go : Logging des requêtes
-    - error_handler.go : Gestion des erreurs
+------------------------------------------------------------------------
 
-- controller
-    Ce dossier contient les contrôleurs qui gèrent les requêtes entrantes.
+### 📂 `middleware/`
 
-    - user_controller.go : Gestion des requêtes liées aux utilisateurs
-    - auth_controller.go : Gestion de l'authentification
-    - post_controller.go : Gestion des posts
-    - comment_controller.go : Gestion des commentaires
-    - like_controller.go : Gestion des likes
-    - follow_controller.go : Gestion des relations entre utilisateurs
+🧱 Fonctions exécutées **avant ou après les handlers** (contrôles
+transversaux) :\
+- 🔒 Vérification des cookies (sessions, tokens).\
+- 🌐 Gestion du **CORS**.\
+- 🛡 Protection basique contre les injections.\
+- ⚠️ Gestion centralisée des erreurs.
 
-- service
-    Ce dossier contient la logique métier de l'application.
+👉 Règles globales de sécurité, validation et contrôle, indépendantes de
+la logique métier.
 
-    - user_service.go : Logique métier pour les utilisateurs
-    - auth_service.go : Logique d'authentification
-    - post_service.go : Logique métier pour les posts
-    - notification_service.go : Gestion des notifications
-    - feed_service.go : Algorithme de génération du fil d'actualité
-    - search_service.go : Fonctionnalités de recherche
-    - file_service.go : Gestion des uploads de fichiers
+------------------------------------------------------------------------
 
+### 📂 `controller/`
 
+🎯 Porte d'entrée des appels API :\
+- réception et parsing des requêtes,\
+- passage par les middlewares,\
+- appel des services/DB,\
+- renvoi des réponses (succès/erreur).
 
-# Tests Unitaires
+Exemples :\
+- **auth_ctrl.go** 🔑 : gestion des rôles et autorisations.\
+- **post_controller.go** 📝 : gestion des posts.\
+- **comment_controller.go** 💬 : gestion des commentaires.\
+- **like_controller.go** ❤️ : gestion des likes.\
+- **follow_controller.go** 👥 : gestion des relations entre
+utilisateurs.
 
-run a partir de /backend avec :
-- ` go test -v ./... ` classique 
-- `-v` pour le détail des test
+------------------------------------------------------------------------
+
+### 📂 `service/`
+
+🧠 Logique métier de l'application (hors transport HTTP) :\
+- **data_check.go** 🔍 : vérifications (ex : utilisateur existant).\
+- **data_treatment.go** 🛠️ : traitements comme le hachage de mot de
+passe.\
+- **file_upload.go** 🖼️ : gestion des fichiers (upload d'images).
+
+------------------------------------------------------------------------
+
+### 📂 `utils/`
+
+🧰 Fonctions utilitaires partagées dans l'application :\
+- **hash.go** 🔑 : hachage des mots de passe.\
+- **jwt.go** 🎟️ : gestion des tokens JWT.\
+- **validator.go** ✅ : validation des données entrantes.\
+- **response.go** 📦 : formatage standardisé des réponses API.\
+- **logger.go** 📜 : configuration des logs.\
+- **helpers.go** 🛠️ : fonctions d'aide diverses.
+
+------------------------------------------------------------------------
+
+### 📂 `test/`
+
+🧪 Tests unitaires des fonctions (hors SQL).
+
+Exécution depuis `/backend` :
+
+``` bash
+go test -v ./...
+```
+
+-   `-v` → mode verbeux pour plus de détails.
