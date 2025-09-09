@@ -29,6 +29,7 @@ export default function RegisterForm() {
     const response = await fetch('http://localhost:8080/register', {
       method: 'POST',
       body: reg_formData,
+      credentials: 'include',
     });
 
     if(!response.ok) {

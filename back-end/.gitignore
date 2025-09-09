@@ -1,0 +1,6 @@
+*.db
+*.env
+*.jpg
+*.jpeg
+*.png
+*.log

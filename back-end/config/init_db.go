@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func InitDB() {
@@ -13,7 +15,7 @@ func InitDB() {
 }
 
 func OpenDB() (DB *sql.DB) {
-	DB, err := sql.Open("sqlite3", "./data.db")
+	DB, err := sql.Open("sqlite3", "/home/student/Documents/Zone01/github_prod/social-network/back-end/data.db")
 	println("Ouverture DB - Ok")
 	if err != nil {
 		print(err)
