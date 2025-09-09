@@ -1,2 +1,6 @@
-.db
-.env
+*.db
+*.env
+*.jpg
+*.jpeg
+*.png
+*.log
