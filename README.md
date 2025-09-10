@@ -113,3 +113,84 @@ go test -v ./...
 ```
 
 -   `-v` → mode verbeux pour plus de détails.
+
+
+
+# 🔄 Documentation golang-migrate - Migration de BDD
+
+## 📋 1. Prérequis
+
+### Installation Go
+- **Go** installé (version 1.16+)
+
+### Dépendances Go
+Ajoutez à votre `go.mod` et importez avec `_` :
+```go
+import (
+    _ "github.com/golang-migrate/migrate/v4"
+    _ "github.com/mattn/go-sqlite3"        // Driver DB
+    _ "github.com/golang-migrate/migrate/v4/source/file"  // Driver source
+)
+```
+
+### CLI migrate
+```bash
+go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+```
+
+---
+
+## 🚀 2. Initialiser une Migration
+
+### Structure des dossiers
+```
+projet/
+└── config/
+    └── migrations/
+        ├── 000001_create_users.up.sql
+        ├── 000001_create_users.down.sql
+        ├── 000002_add_email_column.up.sql
+        └── 000002_add_email_column.down.sql
+```
+
+### Création d'une migration
+```bash
+migrate create -ext sql -dir config/migrations -seq nom_de_la_migration
+```
+
+**Résultat :** Génère automatiquement :
+- `YYYYMMDDHHMMSS_nom_de_la_migration.up.sql` ➡️ **Changements SQL**
+- `YYYYMMDDHHMMSS_nom_de_la_migration.down.sql` ➡️ **Rollback SQL**
+
+---
+
+## ⚠️ 3. Importance du Rollback (.down.sql)
+
+### Principe fondamental
+Le fichier `.down.sql` contient **obligatoirement** les commandes SQL pour annuler les actions du `.up.sql` correspondant.
+
+### Exemple pratique
+```sql
+-- 000001_add_user_age.up.sql
+ALTER TABLE users ADD COLUMN age INTEGER;
+
+-- 000001_add_user_age.down.sql  
+ALTER TABLE users DROP COLUMN age;
+```
+
+---
+
+## 🛠️ 4. Commandes essentielles
+
+```bash
+# Appliquer toutes les migrations
+migrate -path config/migrations -database "sqlite3://app.db" up
+
+# Revenir à la migration précédente
+migrate -path config/migrations -database "sqlite3://app.db" down 1
+
+# Vérifier le statut
+migrate -path config/migrations -database "sqlite3://app.db" version
+```
+
+> **💡 Conseil :** Testez toujours vos migrations `.down.sql` avant le déploiement !

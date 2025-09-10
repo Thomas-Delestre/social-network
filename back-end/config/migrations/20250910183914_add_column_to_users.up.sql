@@ -1,0 +1,2 @@
+ALTER TABLE gym
+ADD COLUMN location TEXT;
