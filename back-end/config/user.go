@@ -57,6 +57,34 @@ func (u User) Delete() {
 	req.Exec(u.Id)
 }
 
-// func (u User) Logout() {
-// 	db :=
-// }
+func (u User) CheckUserExists() bool {
+
+	db := OpenDB()
+	defer db.Close()
+
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM users WHERE email = ?", u.Email).Scan(&count)
+	if err != nil {
+		fmt.Println("Erreur CheckUserExists:", err)
+		return false
+	}
+	return count > 0
+}
+
+func (u User) GetUserData(userID string) (userData User) {
+	db := OpenDB()
+	defer db.Close()
+
+	var st string = `SELECT user_id, first_name, last_name, birthdate, email, profil_picture, about_me, private FROM users WHERE user_id = ?`
+	err := db.QueryRow(st, userID).Scan(&userData.Id, &userData.Firstname, &userData.Lastname, &userData.Birthdate, &userData.Email, &userData.ProfilPicture, &userData.AboutMe, &userData.Private)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("Aucun utilisateur trouvé avec cet ID")
+			return userData
+		}
+		fmt.Println("Erreur lors de la récupération des données utilisateur :", err)
+		return userData
+	}
+	return userData
+}
+

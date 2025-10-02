@@ -43,20 +43,20 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	//Check Injection SQL+
 	if ok, field := middleware.CheckInjection(&_user); ok {
 		log.Printf("❌ Injection détectée dans le champ : %s", field)
-		middleware.SendJsonFeedback(w, "Warning : Une tentative d'injection a été détectée dans le formulaire d'inscription !", http.StatusBadRequest)
+		middleware.SendJsonFeedback(w, "error", "Warning : Une tentative d'injection a été détectée dans le formulaire d'inscription !", http.StatusBadRequest)
 		return
 	}
 	// Password comparaison
 	if _user.Password != _user.ConfirmPassword {
-		middleware.SendJsonFeedback(w, "Warning : Password and Comfirm Password are not the same !", http.StatusBadRequest)
+		middleware.SendJsonFeedback(w, "error", "Warning : Password and Comfirm Password are not the same !", http.StatusBadRequest)
 		return
 	} else {
 		_user.Password, _ = service.HashPassword(r.FormValue("password"))
 	}
 	//Check si l'utilisateur n'existe pas déjà par email
-	var user_exist bool = service.CheckUserExists(_user.Email)
+	var user_exist bool = _user.CheckUserExists()
 	if user_exist {
-		middleware.SendJsonFeedback(w, "Warning : Cette adresse mail est déjà utilisée !", http.StatusBadRequest)
+		middleware.SendJsonFeedback(w, "error", "Warning : Cette adresse mail est déjà utilisée !", http.StatusBadRequest)
 		return
 	}
 	// seulement si tout est validé on télécharge l'image et on concerve sont chemin d'accès.
@@ -77,9 +77,10 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("📦 Structure : %+v\n", _user)
 	_user.Register()
-	_user.SetupConnCookie()
-	middleware.SendJsonFeedback(w, "Vous avez été enregistré !", http.StatusOK)
-
+	cookie := _user.SetupConnCookie()
+	http.SetCookie(w, &cookie)
+	fmt.Println("NORMALEMENT LE COOKIE EST OK !")
+	middleware.SendJsonFeedback(w, "message", "Vous êtes enregistré et connecté !", http.StatusOK)
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +88,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		fmt.Printf("Mauvaise méthode ! Une méthode POST est attendue, et non : %s\n", r.Method)
-		middleware.SendJsonFeedback(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		middleware.SendJsonFeedback(w, "error", "Méthode non autorisée", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -104,16 +105,16 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	// Vérification injection
 	if ok, field := middleware.CheckInjection(&_user); ok {
 		log.Printf("❌ Injection détectée dans le champ : %s", field)
-		middleware.SendJsonFeedback(w, "Warning : Une tentative d'injection a été détectée !", http.StatusBadRequest)
+		middleware.SendJsonFeedback(w, "error", "Warning : Une tentative d'injection a été détectée !", http.StatusBadRequest)
 		return
 	}
 
 	// Vérification existence en DB
-	user_exist := service.CheckUserExists(_user.Email)
+	user_exist := _user.CheckUserExists()
 	fmt.Println("check si user exist")
 	if !user_exist {
 		fmt.Println("user existe pas")
-		middleware.SendJsonFeedback(w, "Warning : Aucun compte lié à cette adresse n'a été retrouvé", http.StatusBadRequest)
+		middleware.SendJsonFeedback(w, "error", "Warning : Aucun compte lié à cette adresse n'a été retrouvé", http.StatusBadRequest)
 		return
 	}
 
@@ -121,7 +122,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("check des log du user")
 	login := _user.Authentificate()
 	if !login {
-		middleware.SendJsonFeedback(w, "Warning : Email ou mot de passe incorrect !", http.StatusUnauthorized)
+		middleware.SendJsonFeedback(w, "error", "Warning : Email ou mot de passe incorrect !", http.StatusUnauthorized)
 		return
 	}
 
@@ -129,5 +130,94 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	cookie := _user.SetupConnCookie()
 	http.SetCookie(w, &cookie)
 	fmt.Println("NORMALEMENT LE COOKIE EST OK !")
-	middleware.SendJsonFeedback(w, "Vous êtes connecté !", http.StatusOK)
+	middleware.SendJsonFeedback(w, "message", "Vous êtes connecté !", http.StatusOK)
+}
+
+func HandleCheckConnection(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Enter in CheckConnection controller")
+
+	var _user config.User
+
+	if r.Method != http.MethodGet {
+		fmt.Printf("Mauvaise méthode ! Une méthode GET est attendue, et non : %s\n", r.Method)
+		middleware.SendJsonFeedback(w, "error", "Méthode non autorisée", http.StatusMethodNotAllowed)
+		return
+	}
+
+	cookie, err := r.Cookie("user")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			middleware.SendJsonFeedback(w, "error", "Utilisateur non connecté", http.StatusUnauthorized)
+			return
+		}
+		middleware.SendJsonFeedback(w, "error", "Erreur serveur", http.StatusBadRequest)
+		return
+	}
+
+	sessionToken := cookie.Value
+	userId, valid := _user.ValidateSession(sessionToken)
+	if !valid {
+		middleware.SendJsonFeedback(w, "error", "Session invalide", http.StatusUnauthorized)
+		return
+	}
+
+	// Si la session est valide, renvoyer les informations de l'utilisateur
+	userData := _user.GetUserData(userId)
+	if userData.Id == "" {
+		middleware.SendJsonFeedback(w, "error", "Utilisateur non trouvé", http.StatusNotFound)
+		return
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"userData": userData,
+		})
+		return
+	}
+}
+
+func HandleLogout(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Enter in Logout controller")
+
+	if r.Method != http.MethodPost {
+		middleware.SendJsonFeedback(w, "error", "Méthode non autorisée", http.StatusMethodNotAllowed)
+		return
+	}
+
+	cookie, err := r.Cookie("user")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			middleware.SendJsonFeedback(w, "error", "Utilisateur non connecté", http.StatusUnauthorized)
+			return
+		}
+		middleware.SendJsonFeedback(w, "error", "Erreur serveur", http.StatusBadRequest)
+		return
+	}
+
+	sessionToken := cookie.Value
+	var u config.User
+	userId, valid := u.ValidateSession(sessionToken)
+	if !valid {
+		middleware.SendJsonFeedback(w, "error", "Session invalide", http.StatusUnauthorized)
+		return
+	}
+
+	// Nettoyage en DB
+	if err := u.Logout(userId); err != nil {
+		middleware.SendJsonFeedback(w, "error", "Erreur lors de la déconnexion", http.StatusInternalServerError)
+		return
+	}
+
+	// Supprimer le cookie côté client
+	expiredCookie := http.Cookie{
+		Name:     "user",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false, // ⚠️ mettre true en prod avec HTTPS
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   -1,
+	}
+	http.SetCookie(w, &expiredCookie)
+
+	middleware.SendJsonFeedback(w, "message", "Déconnexion réussie", http.StatusOK)
 }

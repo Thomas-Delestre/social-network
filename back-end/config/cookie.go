@@ -1,6 +1,7 @@
 package config
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
@@ -25,7 +26,7 @@ func (u User) SetupConnCookie() (cookie http.Cookie) {
 	_expirationdate := time.Now().Add(time.Hour * 24)
 	req.Exec(_uuid, _expirationdate.Format(time_layout), u.Email)
 	cookie = http.Cookie{
-		Name:     "sessionID",
+		Name:     "user",
 		Value:    _uuid.String(),
 		Expires:  _expirationdate,
 		Path:     "/",   // ← indispensable si tu veux qu’il soit dispo partout
@@ -33,4 +34,52 @@ func (u User) SetupConnCookie() (cookie http.Cookie) {
 		Secure:   false, // mettre true en HTTPS
 	}
 	return cookie
+}
+
+func (u User) ValidateSession(sessionToken string) (userID string, valid bool) {
+	db := OpenDB()
+	defer db.Close()
+
+	var dbUserID string
+	var cookieLifeTime time.Time
+
+	st := `SELECT user_id, cookie_life_time FROM users WHERE cookie = ?`
+
+	err := db.QueryRow(st, sessionToken).Scan(&dbUserID, &cookieLifeTime)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", false
+		}
+		fmt.Println("Erreur lors de la validation de la session :", err)
+		return "", false
+	}
+
+	if cookieLifeTime.IsZero() || time.Now().After(cookieLifeTime) {
+		return "", false
+	}
+
+	return dbUserID, true
+}
+
+func (u User) Logout(userId string) error {
+	db := OpenDB()
+	defer db.Close()
+
+	st := `UPDATE users SET cookie = NULL, cookie_life_time = NULL WHERE user_id = ?`
+	stmt, err := db.Prepare(st)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(userId)
+	if err != nil {
+		return err
+	}
+
+	rows, _ := res.RowsAffected()
+	if rows == 0 {
+		fmt.Println("⚠️ Aucun utilisateur trouvé pour ce user_id")
+	}
+	return nil
 }

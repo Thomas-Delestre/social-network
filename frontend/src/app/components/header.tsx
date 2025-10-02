@@ -51,13 +51,13 @@ export default function Header() {
                 >
                   <span className="sr-only">Open user menu</span>
                   <img
-                    className="w-10 h-10"
+                    className="w-10 h-10 rounded-full object-cover"
                     src={
-                      user?.avatar.length !== 0
-                        ? user?.avatar
-                        :  "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                      user?.ProfilPicture && user.ProfilPicture.length > 0
+                        ? `http://localhost:8080/uploads/tauri_icon.png`
+                        : "user.Firstname && user.Lastname"
                     }
-                    alt={`${user?.firstName} ${user?.lastName} Avatar`}
+                    alt={`${user?.Firstname} ${user?.Lastname} Avatar`}
                   />
                 </button>
                 <div
@@ -75,7 +75,7 @@ export default function Header() {
                   >
                     <li>
                       <a
-                        href={`/profile/${user?.uuid}`}
+                        href={`/profile/${user?.Id}`}
                         className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                       >
                         My profile

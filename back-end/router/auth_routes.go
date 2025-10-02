@@ -10,8 +10,9 @@ import (
 
 func AuthRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
-		"/login": controller.HandleLogin,
-		// "/logout":   handleLogout,
+		"/login":           controller.HandleLogin,
+		"/checkConnection": controller.HandleCheckConnection,
+		"/logout":          controller.HandleLogout,
 	}
 
 	for i, k := range handlers_map {

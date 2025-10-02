@@ -1,21 +1,16 @@
 "use client";
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
-const LogoutPage: React.FC = () => {
-    const router = useRouter();
+import { useEffect } from "react";
 
-    useEffect(() => {
-        localStorage.removeItem('user');
+export default function LogoutPage() {
+  useEffect(() => {
+    fetch("http://localhost:8080/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      window.location.href = "/login";
+    });
+  }, []);
 
-        router.push('/');
-    }, []);
-
-    return (
-        <div>
-            <h1>Logging out...</h1>
-        </div>
-    );
-};
-
-export default LogoutPage;
+  return <p>Déconnexion en cours...</p>;
+}
