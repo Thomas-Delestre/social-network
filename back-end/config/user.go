@@ -87,4 +87,3 @@ func (u User) GetUserData(userID string) (userData User) {
 	}
 	return userData
 }
-

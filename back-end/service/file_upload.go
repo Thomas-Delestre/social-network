@@ -32,5 +32,5 @@ func ImageUploader(file multipart.File, handler *multipart.FileHeader, w http.Re
 		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
 	}
 	log.Println("Fichier sauvegardé avec succès dans ./uploads/" + handler.Filename)
-	return path
+	return handler.Filename
 }

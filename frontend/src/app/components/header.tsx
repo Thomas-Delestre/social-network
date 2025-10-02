@@ -54,7 +54,7 @@ export default function Header() {
                     className="w-10 h-10 rounded-full object-cover"
                     src={
                       user?.ProfilPicture && user.ProfilPicture.length > 0
-                        ? `http://localhost:8080/uploads/tauri_icon.png`
+                        ? `http://localhost:8080/uploads/${user.ProfilPicture}`
                         : "user.Firstname && user.Lastname"
                     }
                     alt={`${user?.Firstname} ${user?.Lastname} Avatar`}
