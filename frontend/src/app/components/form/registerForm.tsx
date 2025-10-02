@@ -36,6 +36,10 @@ export default function RegisterForm() {
       const err_feedback = await response.json();
       alert(err_feedback.error);
       return;
+    } else {
+      const success_feedback = await response.json();
+      alert(success_feedback.message);
+      window.location.href = '/login';
     }
   }
   

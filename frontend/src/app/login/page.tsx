@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 export default function Login() {
-  const { isLogged } = useAuth();
+const { isLogged } = useAuth();
 
   const router = useRouter();
 
@@ -18,7 +18,6 @@ export default function Login() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-    
     }); 
     router.push('/home'); 
   }

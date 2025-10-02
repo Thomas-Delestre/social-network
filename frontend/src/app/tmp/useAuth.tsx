@@ -1,35 +1,30 @@
-"use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export const useAuth = () => {
-    //const [isLogged, setIsLogged] = useState(true); 
-    const [isLogged, setIsLogged] = useState(false); // use this line by default the other is for force login
-    const [user, setUser] = useState({
-      aboutMe: "",
-      avatar : "",
-      dateOfBirth : "",
-      email : "",
-      firstName : "",
-      followers : [],
-      uuid : "",
-      lastName : "",
-      password : "",
-      username : "",
-      group: ""
-    });
-  
-    useEffect(() => {
-  
-      const localStorageUser = localStorage.getItem('user');
+  console.log("useAuth called");
+  const [isLogged, setIsLogged] = useState<boolean | null>(null); // null = en cours de chargement
+  const [user, setUser] = useState<any>(null);
 
-      if (localStorageUser) {
-        const localUser = JSON.parse(localStorageUser);
-        setUser(localUser.userData);
+  useEffect(() => {
+    console.log("Checking authentication status...");
+    
+    fetch("http://localhost:8080/checkConnection", {
+      credentials: "include", // 🔑 obligatoire pour envoyer le cookie
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Not logged");
+        const data = await res.json();
+        setUser(data.userData);
         setIsLogged(true);
-      }
-      
-    }, []);
-  
-    return { isLogged, user };
-  };
-  
+      })
+      .catch(() => {
+        setUser(null);
+        setIsLogged(false);
+      });
+  }, []);
+  console.log("isLogged:", isLogged, "user:", user);
+  return { isLogged, user };
+};
+
+
+

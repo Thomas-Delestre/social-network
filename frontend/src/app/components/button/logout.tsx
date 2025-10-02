@@ -1,10 +1,23 @@
 import React from 'react';
+import { useAuth } from '../../tmp/useAuth';
 
 export default function LogoutButton() {
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    window.location.href = '/';
+
+    console.log("Logging out...");
+    fetch("http://localhost:8080/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) {
+          window.location.href = "/login"; // redirection après logout
+        } else {
+          console.error("Logout failed");
+        }
+      })
+      .catch((err) => console.error("Error:", err));
   };
 
   return (
