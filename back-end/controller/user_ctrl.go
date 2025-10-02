@@ -71,8 +71,8 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		upload_path := service.ImageUploader(file, handler, w)
-		_user.ProfilPicture = upload_path
+		img_name := service.ImageUploader(file, handler, w)
+		_user.ProfilPicture = img_name
 	}
 
 	fmt.Printf("📦 Structure : %+v\n", _user)
