@@ -87,3 +87,32 @@ func (u User) GetUserData(userID string) (userData User) {
 	}
 	return userData
 }
+
+func (u User) GetUserFriends(userID string) (friendsIDs []string) {
+
+	friendsIDs = []string{}
+	db := OpenDB()
+	defer db.Close()
+
+	var st string = `SELECT user_1, user_2 FROM relationship WHERE are_friend = ? AND (user_1 = ? OR user_2 = ?)`
+	rows, err := db.Query(st, true, userID, userID)
+	if err != nil {
+		fmt.Println("Erreur lors de la récupération des amis :", err)
+		return friendsIDs
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user1, user2 string
+		if err := rows.Scan(&user1, &user2); err != nil {
+			fmt.Println("Erreur lors du scan des amis :", err)
+			continue
+		}
+		if user1 == userID {
+			friendsIDs = append(friendsIDs, user2)
+		} else {
+			friendsIDs = append(friendsIDs, user1)
+		}
+	}
+	return friendsIDs
+}

@@ -53,15 +53,15 @@ export default function MakePersonalPostModal() {
     post_formData.allowedUsers.forEach(u => data.append("allowedUsers[]", u));
     if (post_formData.image) data.append("image", post_formData.image);
 
-    // console.log("FormData contents: ----------------");
-    // for (const [key, value] of data.entries()) {
-    //   if (value instanceof File) {
-    //     console.log(`${key}: [File] ${value.name} (${value.size} bytes)`);
-    //   } else {
-    //     console.log(`${key}:`, value);
-    //   }
-    // }
-
+    console.log("FormData contents: ----------------");
+    for (const [key, value] of data.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: [File] ${value.name} (${value.size} bytes)`);
+      } else {
+        console.log(`${key}:`, value);
+      }
+    }
+    
     console.log("-------------------------");
     const response = await fetch('http://localhost:8080/newpost', {
       method: 'POST',

@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"socialnet/config"
 	"socialnet/middleware"
+	"socialnet/service"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 func HandleNewPost(w http.ResponseWriter, r *http.Request) {
@@ -25,20 +29,24 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// récup intégrale du formulaire
-	_post.UserId = r.FormValue("user_id")
+	_post.Id = uuid.New().String()
+	_post.UserId = r.FormValue("userId")
 	_post.Content = r.FormValue("content")
+	_post.Date = time.Now().Format("2006-01-02 15:04:05")
 	_post.Visibility = r.FormValue("visibility")
 	allowedUsers := r.Form["allowed_users[]"]
 	_post.AllowedUsers = allowedUsers
 
 	fmt.Println("- post struct :", _post)
+	//Check Injection SQL+
 	if ok, field := middleware.CheckInjection(&_post); ok {
 		log.Printf("❌ Injection détectée dans le champ : %s", field)
 		middleware.SendJsonFeedback(w, "error", "Warning : Une tentative d'injection a été détectée dans le formulaire de création de post !", http.StatusBadRequest)
 		return
 	}
-	file, handler, err := r.FormFile("Image")
-
+	// Récupération du fichier image
+	file, handler, err := r.FormFile("image")
+	fmt.Println("- retrieving image file...\n", file)
 	if err != nil {
 		if err == http.ErrMissingFile {
 			log.Println("Aucun fichier 'Image' n'a été envoyé dans ce Post.")
@@ -48,10 +56,10 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		print("img downloaded : ", file, handler)
-		//img_name := service.ImageUploader(file, handler, w)
-		//_post.Image = img_name
+		fmt.Println("img downloaded : ", file, handler)
+		img_name := service.ImageUploader(file, handler, w)
+		_post.Image = img_name
 	}
 	_post.NewPost()
-	middleware.SendJsonFeedback(w, "success", "Post created successfully!", http.StatusOK)
+	middleware.SendJsonFeedback(w, "Post Created !", "Post created successfully!", http.StatusOK)
 }

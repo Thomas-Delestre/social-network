@@ -19,8 +19,8 @@ type Post struct {
 	Id           string
 	UserId       string
 	Content      string
+	Date         string
 	Visibility   string
 	AllowedUsers []string
 	Image        string
 }
-
