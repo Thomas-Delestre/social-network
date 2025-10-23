@@ -4,7 +4,7 @@ import { initFlowbite } from "flowbite";
 import ThemeToggle from "./button/theme";
 import { useAuth } from "../tmp/useAuth";
 import SearchModal from "./input/searchModal";
-import MakePersonalPostModal from "./form/makePresonalPostMadal";
+import MakePersonalPostModal from "./form/makePresonalPostModal";
 
 export default function Header() {
   const { isLogged, user } = useAuth();

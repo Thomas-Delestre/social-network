@@ -3,7 +3,7 @@ import { users } from "../../object/user";
 import { groupPosts } from "../../object/groupPost";
 import Post from "../../components/post";
 import { groupEvent } from "../../object/groupEvent";
-import MakeGroupPostModal from "@/app/components/form/makeGroupPostMadal";
+import MakeGroupPostModal from "@/app/components/form/makeGroupPostModal";
 import GroupJoinButton from "@/app/components/button/groupJoin";
 import MakeGroupEventModal from "@/app/components/form/makeGroupEventModal";
 import AddUserToTheGroupModal from "@/app/components/form/addUserToTheGroupModal";

@@ -11,7 +11,7 @@ import (
 func PostRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
 
-		// "/newpost":         handleNewPost,
+		"/newpost": controller.HandleNewPost,
 		// "/like/":           handleLike,
 		// "/dislike/":        handleDislike,
 		// "/newcomment/":     handleNewComment,

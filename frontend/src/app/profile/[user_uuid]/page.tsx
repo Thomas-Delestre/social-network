@@ -5,6 +5,7 @@ import FollowButton from "@/app/components/button/follow";
 import { groups } from "../../object/group";
 
 export default function Profile(props: any) {
+
   const user_uuid = props.params.user_uuid;
   const user = users.find((user) => user.uuid === user_uuid);
 
