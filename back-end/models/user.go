@@ -1,15 +1,16 @@
-package config
+package models
 
 import (
 	"database/sql"
 	"fmt"
+	"socialnet/database"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (u User) Register() {
 	// Commandes pour enregistrer dans la db
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 	var st string = `INSERT INTO users(user_id, first_name, last_name, birthdate, email, password, profil_picture, about_me, private) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	req, err := db.Prepare(st)
@@ -22,7 +23,7 @@ func (u User) Register() {
 }
 
 func (u User) Authentificate() bool {
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 
 	var hashedPassword string
@@ -46,7 +47,7 @@ func (u User) Authentificate() bool {
 }
 
 func (u User) Delete() {
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 	var st string = `DELETE FROM users WHERE user_id = ?`
 	req, err := db.Prepare(st)
@@ -59,7 +60,7 @@ func (u User) Delete() {
 
 func (u User) CheckUserExists() bool {
 
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 
 	var count int
@@ -72,7 +73,7 @@ func (u User) CheckUserExists() bool {
 }
 
 func (u User) GetUserData(userID string) (userData User) {
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 
 	var st string = `SELECT user_id, first_name, last_name, birthdate, email, profil_picture, about_me, private FROM users WHERE user_id = ?`
@@ -86,4 +87,33 @@ func (u User) GetUserData(userID string) (userData User) {
 		return userData
 	}
 	return userData
+}
+
+func (u User) GetUserFriends(userID string) (friendsIDs []string) {
+
+	friendsIDs = []string{}
+	db := database.OpenDB()
+	defer db.Close()
+
+	var st string = `SELECT user_1, user_2 FROM relationship WHERE are_friend = ? AND (user_1 = ? OR user_2 = ?)`
+	rows, err := db.Query(st, true, userID, userID)
+	if err != nil {
+		fmt.Println("Erreur lors de la récupération des amis :", err)
+		return friendsIDs
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user1, user2 string
+		if err := rows.Scan(&user1, &user2); err != nil {
+			fmt.Println("Erreur lors du scan des amis :", err)
+			continue
+		}
+		if user1 == userID {
+			friendsIDs = append(friendsIDs, user2)
+		} else {
+			friendsIDs = append(friendsIDs, user1)
+		}
+	}
+	return friendsIDs
 }

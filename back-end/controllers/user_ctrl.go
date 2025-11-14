@@ -1,12 +1,12 @@
-package controller
+package controllers
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"socialnet/config"
 	"socialnet/middleware"
+	"socialnet/models"
 	"socialnet/service"
 	"strconv"
 
@@ -16,7 +16,7 @@ import (
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("- enter handleRegister")
-	var _user config.User
+	var _user models.User
 	// Gestion de la méthode
 	if r.Method != http.MethodPost {
 		log.Printf("Mauvaise méthode ! Une méthode POST est attendue, et non : %s", r.Method)
@@ -92,7 +92,8 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var _user config.User
+	var _user models.User
+
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&_user)
 	if err != nil {
@@ -136,7 +137,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 func HandleCheckConnection(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Enter in CheckConnection controller")
 
-	var _user config.User
+	var _user models.User
 
 	if r.Method != http.MethodGet {
 		fmt.Printf("Mauvaise méthode ! Une méthode GET est attendue, et non : %s\n", r.Method)
@@ -194,7 +195,7 @@ func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionToken := cookie.Value
-	var u config.User
+	var u models.User
 	userId, valid := u.ValidateSession(sessionToken)
 	if !valid {
 		middleware.SendJsonFeedback(w, "error", "Session invalide", http.StatusUnauthorized)

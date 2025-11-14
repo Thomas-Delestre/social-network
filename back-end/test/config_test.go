@@ -1,14 +1,14 @@
 package test
 
 import (
-	"socialnet/config"
+	"socialnet/models"
 	"socialnet/service"
 	"testing"
 )
 
 func TestRegister(t *testing.T) {
 
-	var _user config.User
+	var _user models.User
 
 	_user.Id = "test-id-123"
 	_user.Firstname = "Test"
@@ -22,7 +22,7 @@ func TestRegister(t *testing.T) {
 
 	_user.Register()
 
-	var user_exist bool = service.CheckUserExists(_user.Email)
+	var user_exist bool = _user.CheckUserExists()
 	if !user_exist {
 		t.Error("Échec de l'enregistrement de l'utilisateur ou de la vérification de son existence.", user_exist)
 	} else {
@@ -31,7 +31,7 @@ func TestRegister(t *testing.T) {
 }
 
 func TestSetupConnCookie(t *testing.T) {
-	var _user config.User
+	var _user models.User
 	_user.Id = "test-id-123"
 	_user.Firstname = "Test"
 	_user.Lastname = "User"
@@ -50,7 +50,7 @@ func TestSetupConnCookie(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	var _user config.User
+	var _user models.User
 
 	_user.Id = "test-id-123"
 	_user.Firstname = "Test"
@@ -63,12 +63,12 @@ func TestDelete(t *testing.T) {
 	_user.ProfilPicture = "default.png"
 
 	_user.Register()
-	var user_exist bool = service.CheckUserExists(_user.Email)
+	var user_exist bool = _user.CheckUserExists()
 	if !user_exist {
 		t.Error("Échec de l'enregistrement de l'utilisateur ou de la vérification de son existence.", user_exist)
 	} else {
 		_user.Delete()
-		user_exist = service.CheckUserExists(_user.Email)
+		user_exist = _user.CheckUserExists()
 		if user_exist {
 			t.Error("Échec de la suppression de l'utilisateur.", user_exist)
 		}

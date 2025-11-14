@@ -1,4 +1,4 @@
-package config
+package models
 
 type User struct {
 	Id              string
@@ -13,4 +13,14 @@ type User struct {
 	Private         bool
 	Cookie          string
 	CookieLifeTime  string
+}
+
+type Post struct {
+	Id           string
+	UserId       string
+	Content      string
+	Date         string
+	Visibility   string
+	AllowedUsers []string
+	Image        string
 }

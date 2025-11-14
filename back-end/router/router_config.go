@@ -15,10 +15,10 @@ func SetupRouter() *mux.Router {
 	fs := http.FileServer(http.Dir(dir))
 	bFs := http.FileServer(http.Dir(dir + "/rsc/build/"))
 	uploadsDir := http.Dir(dir + "/uploads")
-
 	// Servir les fichiers statiques avec PathPrefix et StripPrefix
 	router.PathPrefix("/rsc/").Handler(http.StripPrefix("/rsc/", fs))
 	router.PathPrefix("/_app/").Handler(http.StripPrefix("/_app/", bFs))
+	// Servir les fichiers du dossier uploads
 	router.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(uploadsDir)))
 
 	GetRoutes(router)

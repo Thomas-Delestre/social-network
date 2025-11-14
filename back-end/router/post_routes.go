@@ -3,7 +3,7 @@ package router
 import (
 	"fmt"
 	"net/http"
-	"socialnet/controller"
+	"socialnet/controllers"
 
 	"github.com/gorilla/mux"
 )
@@ -11,13 +11,13 @@ import (
 func PostRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
 
-		// "/newpost":         handleNewPost,
+		"/newpost": controllers.HandleNewPost,
 		// "/like/":           handleLike,
 		// "/dislike/":        handleDislike,
 		// "/newcomment/":     handleNewComment,
 		// "/likecomment/":    handleLikeComment,
 		// "/dislikecomment/": handleDislikeComment,
-		"/register": controller.HandleRegister,
+		"/register": controllers.HandleRegister,
 	}
 
 	for i, k := range handlers_map {

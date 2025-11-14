@@ -2,6 +2,7 @@ module socialnet
 
 go 1.24.7
 
+
 require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/golang-migrate/migrate v3.5.4+incompatible

@@ -3,16 +3,16 @@ package router
 import (
 	"fmt"
 	"net/http"
-	"socialnet/controller"
+	"socialnet/controllers"
 
 	"github.com/gorilla/mux"
 )
 
 func AuthRoutes(router *mux.Router) {
 	handlers_map := map[string]func(http.ResponseWriter, *http.Request){
-		"/login":           controller.HandleLogin,
-		"/checkConnection": controller.HandleCheckConnection,
-		"/logout":          controller.HandleLogout,
+		"/login":           controllers.HandleLogin,
+		"/checkConnection": controllers.HandleCheckConnection,
+		"/logout":          controllers.HandleLogout,
 	}
 
 	for i, k := range handlers_map {

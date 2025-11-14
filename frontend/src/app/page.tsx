@@ -20,8 +20,7 @@ export default function NoLog() {
       draggable: true,
       progress: undefined,
     
-    }); 
-    router.push('/home'); 
+    });
   }
 
   return (

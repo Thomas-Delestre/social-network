@@ -1,7 +1,7 @@
 package test
 
 import (
-	"socialnet/config"
+	"socialnet/models"
 	"socialnet/service"
 	"testing"
 
@@ -10,7 +10,7 @@ import (
 
 func TestCheckUserExists(t *testing.T) {
 	email := "nico@nico.com"
-	var _user config.User
+	var _user models.User
 	exists := _user.CheckUserExists()
 	if !exists {
 		t.Errorf("CheckUserExists(%s) = false, attendu true", email)
