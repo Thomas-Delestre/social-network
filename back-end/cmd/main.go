@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"socialnet/config"
+	"socialnet/database"
 	"socialnet/middleware"
 	"socialnet/router"
 
@@ -22,7 +22,7 @@ func main() {
 	} else {
 		log.Println("Fichier .env chargé.")
 	}
-	config.InitDB()
+	database.InitDB()
 
 	router := router.SetupRouter()
 

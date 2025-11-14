@@ -3,24 +3,24 @@ import LoginForm from "../components/form/loginForm";
 import { useAuth } from "../tmp/useAuth";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useEffect } from "react";
+
+
 
 export default function Login() {
-const { isLogged } = useAuth();
-
+  const { isLogged } = useAuth();
   const router = useRouter();
 
-  if (isLogged) {
-    toast.error('You are already Login!' , {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    }); 
-    router.push('/home'); 
-  }
+  useEffect(() => {
+    if (isLogged === true) {
+      toast.error("You are already logged in!", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      router.push("/home");
+    }
+  }, [isLogged, router]);
+
   
   return (
     <div className="h-screen md:flex">

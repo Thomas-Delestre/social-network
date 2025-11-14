@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, use } from "react";
 import { users } from "@/app/object/user";
-import { useAuth } from "../../tmp/useAuth";
 
 interface User {
   uuid: string;
@@ -9,9 +8,10 @@ interface User {
   lastName: string;
 }
 
-export default function MakePersonalPostModal() {
 
-  const { isLogged, user } = useAuth();
+export default function MakePersonalPostModal({currentUser}: {currentUser: {isLogged: boolean, user: any | null}}) {
+
+  const { isLogged, user } = currentUser
   const [isOpen, setIsOpen] = useState(false);
   const [isAlmostPrivate, setIsAlmostPrivate] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -20,7 +20,7 @@ export default function MakePersonalPostModal() {
   const backdropRef = useRef<HTMLDivElement>(null);
 
   const [post_formData, setFormData] = useState({
-    userId: "",
+    userId: user?.Id || "",
     content: "",
     visibility: "public",
     allowedUsers: [] as string[],
@@ -54,14 +54,8 @@ export default function MakePersonalPostModal() {
     if (post_formData.image) data.append("image", post_formData.image);
 
     console.log("FormData contents: ----------------");
-    for (const [key, value] of data.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: [File] ${value.name} (${value.size} bytes)`);
-      } else {
-        console.log(`${key}:`, value);
-      }
-    }
-    
+    console.log(data.entries())
+
     console.log("-------------------------");
     const response = await fetch('http://localhost:8080/newpost', {
       method: 'POST',
@@ -80,6 +74,7 @@ export default function MakePersonalPostModal() {
       const success_feedback = await response.json();
       console.log('Success response:', success_feedback); // ✅ Voir la structure
       alert(success_feedback.message || 'Succès !');
+      closeModal()
     }
   };
 

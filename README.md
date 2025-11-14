@@ -194,3 +194,6 @@ migrate -path config/migrations -database "sqlite3://app.db" version
 ```
 
 > **💡 Conseil :** Testez toujours vos migrations `.down.sql` avant le déploiement !
+
+
+Se renseigner sur les useContext en Next qui permette de conserver des valeur pour tout les enfants d'une page.

@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"database/sql"
@@ -14,7 +14,7 @@ import (
 
 const (
 	DBPath         = "/home/student/Documents/Zone01/github_prod/social-network/back-end/data.db"
-	MigrationsPath = "./config/migrations"
+	MigrationsPath = "./database/migrations"
 )
 
 // InitDB initialise la base de données et applique les migrations

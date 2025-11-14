@@ -23,9 +23,7 @@ export default function RegisterForm() {
     const reg_formData = new FormData(event.currentTarget)
 
     console.log("🚀 ~ onSubmit ~ reg_formData:")
-    for (const [key, value] of reg_formData) {
-      console.log(`${key}: ${value}\n`)
-    }
+
     const response = await fetch('http://localhost:8080/register', {
       method: 'POST',
       body: reg_formData,
@@ -39,7 +37,7 @@ export default function RegisterForm() {
     } else {
       const success_feedback = await response.json();
       alert(success_feedback.message);
-      window.location.href = '/login';
+      window.location.href = '/home';
     }
   }
   

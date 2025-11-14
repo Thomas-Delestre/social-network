@@ -194,3 +194,15 @@ Also have a look at the [FAQ](FAQ.md).
 ---
 
 Looking for alternatives? [https://awesome-go.com/#database](https://awesome-go.com/#database).
+
+
+
+
+
+Archi :
+
+- cmd good practice en go
+- model 
+
+
+Router -> controller (test method http, test injection, service de hash)

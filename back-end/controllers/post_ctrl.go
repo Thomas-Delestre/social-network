@@ -1,11 +1,11 @@
-package controller
+package controllers
 
 import (
 	"fmt"
 	"log"
 	"net/http"
-	"socialnet/config"
 	"socialnet/middleware"
+	"socialnet/models"
 	"socialnet/service"
 	"time"
 
@@ -15,7 +15,7 @@ import (
 func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("- enter handleNewPost")
-	var _post config.Post
+	var _post models.Post
 	// Gestion de la méthode
 	if r.Method != http.MethodPost {
 		log.Printf("Mauvaise méthode ! Une méthode POST est attendue, et non : %s", r.Method)
@@ -56,7 +56,6 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		fmt.Println("img downloaded : ", file, handler)
 		img_name := service.ImageUploader(file, handler, w)
 		_post.Image = img_name
 	}

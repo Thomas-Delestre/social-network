@@ -1,10 +1,13 @@
-package config
+package models
 
-import "fmt"
+import (
+	"fmt"
+	"socialnet/database"
+)
 
 func (p Post) NewPost() {
 	fmt.Println("New Post sql...\n")
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 	var st string = `INSERT INTO posts(post_id, user_id, content, pub_date, image, privacy) VALUES (?, ?, ?, ?, ?, ?)`
 	req, err := db.Prepare(st)

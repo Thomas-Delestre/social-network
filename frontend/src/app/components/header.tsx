@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import { initFlowbite } from "flowbite";
 import ThemeToggle from "./button/theme";
 import { useAuth } from "../tmp/useAuth";
+import { useRouter } from 'next/navigation';
+
 import SearchModal from "./input/searchModal";
 import MakePersonalPostModal from "./form/makePresonalPostModal";
 
 export default function Header() {
+  const router = useRouter();
   const { isLogged, user } = useAuth();
   const [isClient, setIsClient] = useState(false);
 
@@ -14,6 +17,14 @@ export default function Header() {
     setIsClient(true);
     initFlowbite();
   }, []);
+
+  // ⚠️ il faut une 2e useEffect pour attendre que isLogged soit défini
+  useEffect(() => {
+    if (isLogged === false) {
+      router.push("/login");
+    }
+  }, [isLogged, router]); // on dépend de isLogged
+
 
   const isActive = (path: string) => {
     if (isClient && window.location.pathname === path) {
@@ -53,7 +64,7 @@ export default function Header() {
                   <img
                     className="w-10 h-10 rounded-full object-cover"
                     src={
-                      user?.ProfilPicture && user.ProfilPicture.length > 0
+                      user?.ProfilPicture && user?.ProfilPicture.length > 0
                         ? `http://localhost:8080/uploads/${user.ProfilPicture}`
                         : "user.Firstname && user.Lastname"
                     }
@@ -158,7 +169,7 @@ export default function Header() {
                 </a>
               </li>
               <li className="dark:text-white">
-                  <MakePersonalPostModal/>
+                  <MakePersonalPostModal currentUser={{isLogged, user}} />
               </li>
               <li className="dark:text-white">
                   <SearchModal/>

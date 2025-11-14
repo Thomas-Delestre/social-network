@@ -1,9 +1,10 @@
-package config
+package models
 
 import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"socialnet/database"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -14,7 +15,7 @@ const time_layout = "2006-01-02 15:04"
 func (u User) SetupConnCookie() (cookie http.Cookie) {
 	_uuid, _ := uuid.NewV4()
 
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 
 	var st string = `UPDATE users SET cookie = ?, cookie_life_time = ? WHERE email = ?`
@@ -37,7 +38,7 @@ func (u User) SetupConnCookie() (cookie http.Cookie) {
 }
 
 func (u User) ValidateSession(sessionToken string) (userID string, valid bool) {
-	db := OpenDB()
+	db := database.OpenDB()
 	defer db.Close()
 
 	var dbUserID string
@@ -61,8 +62,8 @@ func (u User) ValidateSession(sessionToken string) (userID string, valid bool) {
 	return dbUserID, true
 }
 
-func (u User) Logout(userId string) error {
-	db := OpenDB()
+func (u User   ) Logout(userId string) error {
+	db := database.OpenDB()
 	defer db.Close()
 
 	st := `UPDATE users SET cookie = NULL, cookie_life_time = NULL WHERE user_id = ?`
