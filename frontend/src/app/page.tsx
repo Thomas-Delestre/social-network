@@ -19,8 +19,8 @@ export default function NoLog() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-    
     });
+    router.push('/home')
   }
 
   return (
