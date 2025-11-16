@@ -1,6 +1,6 @@
 "use client";
 import LoginForm from "../components/form/loginForm";
-import { useAuth } from "../tmp/useAuth";
+import { useAuth } from "../hook/useAuth";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useEffect } from "react";

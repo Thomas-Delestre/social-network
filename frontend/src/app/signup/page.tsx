@@ -1,6 +1,6 @@
 "use client";
 import RegisterForm from "../components/form/registerForm";
-import { useAuth } from "../tmp/useAuth";
+import { useAuth } from "../hook/useAuth";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 

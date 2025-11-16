@@ -1,7 +1,7 @@
 "use client";
 import LoginButton from "./components/button/login";
 import SignUpButton from "./components/button/signup";
-import { useAuth } from "./tmp/useAuth";
+import { useAuth } from "./hook/useAuth";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 

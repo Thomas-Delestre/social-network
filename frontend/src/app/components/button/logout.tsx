@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../tmp/useAuth';
+import { useAuth } from '../../hook/useAuth';
 
 export default function LogoutButton() {
 

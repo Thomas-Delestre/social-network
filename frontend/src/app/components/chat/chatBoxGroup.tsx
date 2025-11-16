@@ -1,7 +1,7 @@
 import React from "react";
 import { chatGroupMessage } from "../../object/fakeChat";
 import { users } from "../../object/user";
-import { useAuth } from "@/app/tmp/useAuth";
+import { useAuth } from "@/app/hook/useAuth";
 
 interface ChatBoxProps {
   selectGroup: any;

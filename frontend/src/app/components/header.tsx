@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { initFlowbite } from "flowbite";
 import ThemeToggle from "./button/theme";
-import { useAuth } from "../tmp/useAuth";
+import { useAuth } from "../hook/useAuth";
 import { useRouter } from 'next/navigation';
 
 import SearchModal from "./input/searchModal";

@@ -1,6 +1,6 @@
 import React from "react";
 import { chatMessage } from "../../object/fakeChat";
-import { useAuth } from "@/app/tmp/useAuth";
+import { useAuth } from "@/app/hook/useAuth";
 
 interface ChatBoxProps {
   selectUser: any;
